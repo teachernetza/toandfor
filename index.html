@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>To vs For Mastery | Rators Elite Lab</title>
+    
+    <link rel="icon" href="https://drive.google.com/thumbnail?id=1Xqx2WYM7wKxc9t28mWNWxXWXatctKzkF&sz=w128" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* ========================================
+           DESIGN SYSTEM: PLATINUM ARCHITECTURE v12
+           ======================================== */
+        :root {
+            /* Light Mode Palette */
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --surface-hover: #f1f5f9;
+            --header-bg: rgba(255, 255, 255, 0.92);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #7c3aed; /* Rators Purple */
+            --primary-light: rgba(124, 58, 237, 0.1);
+            --secondary: #0ea5e9; /* Rators Blue */
+            --secondary-light: rgba(14, 165, 233, 0.1);
+            --accent: #10b981; /* Success Green */
+            --error: #ef4444; /* Error Red */
+            --border: rgba(15, 23, 42, 0.08);
+            --glow: 0 10px 40px rgba(124, 58, 237, 0.15);
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.03);
+            --navy: #020617;
+            --sidebar-w: 400px;
+        }
+
+        .dark-mode {
+            /* Dark Mode Palette (Navy Blue Deep) */
+            --bg: #020617;
+            --surface: #0f172a;
+            --surface-hover: #1e293b;
+            --header-bg: rgba(2, 6, 23, 0.92);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #a78bfa; 
+            --primary-light: rgba(167, 139, 250, 0.15);
+            --secondary: #38bdf8;
+            --secondary-light: rgba(56, 189, 248, 0.15);
+            --border: rgba(255, 255, 255, 0.1);
+            --glow: 0 10px 40px rgba(167, 139, 250, 0.25);
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Global Resets & Smooth Transitions */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        html, body { 
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow-x: hidden; scroll-behavior: smooth;
+        }
+
+        /* * FIX: Smooth Color Transitioning across the entire DOM 
+         * This ensures Dark Mode toggles gracefully without flickering.
+         */
+        body, .card, header, .sidebar, .side-btn, .word-chip, .quiz-option, .logic-panel, .explainer-box { 
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease; 
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); color: var(--text-main); 
+        }
+
+        /* Technical Blueprint Grid */
+        .blueprint-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background-image: 
+                radial-gradient(var(--border) 1.5px, transparent 1.5px),
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 50px 50px, 100px 100px, 100px 100px;
+            opacity: 0.4;
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            padding: 1rem 2.5rem; display: flex; justify-content: space-between; align-items: center;
+            background: var(--header-bg); backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 2000; border-bottom: 3px solid var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .header-brand { display: flex; align-items: center; gap: 15px; text-decoration: none; color: inherit; cursor: pointer; }
+        
+        .logo-box { 
+            width: 46px; height: 46px; border: 2.5px solid var(--primary); border-radius: 14px; 
+            display: flex; align-items: center; justify-content: center; 
+            background: var(--surface); box-shadow: var(--glow);
+        }
+        .logo-svg { width: 28px; fill: var(--primary); }
+        .brand-text b { font-family: 'Outfit'; font-size: 1.5rem; letter-spacing: 0.5px; text-transform: uppercase; }
+
+        .menu-trigger { 
+            background: var(--surface); border: 2px solid var(--border); width: 50px; height: 50px; 
+            border-radius: 14px; cursor: pointer; color: var(--text-main); font-size: 1.4rem; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        .menu-trigger:hover { border-color: var(--primary); transform: rotate(90deg); box-shadow: var(--glow); }
+
+        /* --- Sidebar Navigation (Redesigned) --- */
+        .sidebar { 
+            position: fixed; top: 0; right: -100%; width: 100%; max-width: var(--sidebar-w); height: 100%; 
+            background: var(--header-bg); backdrop-filter: blur(40px); z-index: 3000; 
+            transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1); padding: 4rem 2rem; 
+            box-shadow: -20px 0 80px rgba(0,0,0,0.4); display: flex; flex-direction: column;
+        }
+        .sidebar.active { right: 0; }
+        
+        .sidebar-close {
+            background: none; border: none; font-size: 2.2rem; align-self: flex-end; 
+            color: var(--text-muted); cursor: pointer; transition: 0.3s;
+        }
+        .sidebar-close:hover { color: var(--error); transform: scale(1.1) rotate(90deg); }
+
+        /* * FIX: Side Buttons redesign. 
+         * Removed the "text box" look. Now they are sleek navigation pills. 
+         */
+        .nav-menu { margin-top: 3rem; flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
+        
+        .side-btn { 
+            width: 100%; padding: 18px 24px; border: 2px solid transparent; border-radius: 20px; 
+            background: transparent; color: var(--text-muted); font-weight: 800; text-align: left; 
+            cursor: pointer; display: flex; align-items: center; gap: 18px; text-decoration: none; 
+            font-size: 1.1rem; letter-spacing: 0.5px;
+        }
+        .side-btn i { font-size: 1.4rem; color: var(--text-muted); transition: 0.3s; width: 30px; text-align: center; }
+        
+        .side-btn:hover { 
+            background: var(--surface-hover); color: var(--text-main);
+            transform: translateX(-8px); 
+        }
+        
+        .side-btn.active { 
+            background: var(--primary-light); border-color: var(--primary); 
+            color: var(--primary); box-shadow: var(--glow);
+        }
+        .side-btn.active i { color: var(--primary); }
+
+        /* Theme Toggle Control */
+        .theme-control {
+            margin-top: auto; padding: 25px; border: 2px solid var(--border); border-radius: 25px;
+            display: flex; justify-content: space-between; align-items: center; background: var(--surface);
+            box-shadow: var(--shadow-sm);
+        }
+        .switch { position: relative; width: 60px; height: 32px; cursor: pointer; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--text-muted); border-radius: 34px; transition: 0.4s; }
+        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.4s; }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider:before { transform: translateX(28px); }
+
+        /* --- Main Layout --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 4rem 1.5rem; }
+        .section { display: none; animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { 
+            background: var(--surface); border: 2px solid var(--border); border-radius: 45px; 
+            padding: 4.5rem 3.5rem; margin-bottom: 3rem; box-shadow: var(--shadow-sm); 
+            position: relative; overflow: hidden;
+        }
+        
+        h1 { font-size: clamp(2.5rem, 7vw, 4rem); font-weight: 800; color: var(--primary); letter-spacing: -2px; line-height: 1.1; margin: 0 0 1.5rem; }
+        h2 { font-size: 2rem; font-weight: 800; margin: 3.5rem 0 1.5rem; font-family: 'Outfit'; color: var(--secondary); }
+        p { font-size: 1.25rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.5rem; }
+        
+        .bold-purple { color: var(--primary); font-weight: 800; }
+        .bold-blue { color: var(--secondary); font-weight: 800; }
+        
+        .lang-en { font-family: 'JetBrains Mono', monospace; background: var(--primary-light); padding: 4px 10px; border-radius: 8px; font-weight: 700; color: var(--primary); }
+        
+        .explainer-box {
+            background: var(--secondary-light); border-left: 8px solid var(--secondary);
+            padding: 2.5rem; border-radius: 20px; margin: 3rem 0;
+        }
+        .explainer-box p { color: var(--text-main); font-size: 1.2rem; margin-bottom: 0; font-weight: 500; }
+
+        /* Logic Visualization Panel */
+        .logic-panel { 
+            background: var(--bg); border: 3px dashed var(--border); border-radius: 35px; 
+            padding: 3rem; margin: 3rem 0; text-align: center;
+        }
+        .formula { display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; font-weight: 800; }
+        .node { padding: 14px 28px; border-radius: 16px; border: 2.5px solid var(--border); background: var(--surface); font-size: 1.1rem; box-shadow: var(--shadow-sm); }
+        .node.to { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .node.for { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
+        .node.person { border-color: var(--text-main); color: var(--text-main); }
+
+        /* --- Interactive Workshop --- */
+        .workshop-area { background: var(--bg); padding: 3.5rem 2rem; border-radius: 40px; margin-top: 3rem; text-align: center; border: 2px solid var(--border); box-shadow: inset 0 0 30px rgba(0,0,0,0.02); }
+        
+        .audio-trigger { 
+            background: var(--primary); color: white; border: none; padding: 20px 40px; border-radius: 20px; 
+            cursor: pointer; font-weight: 800; display: inline-flex; align-items: center; gap: 15px; 
+            font-size: 1.2rem; margin-bottom: 2.5rem; transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: var(--glow);
+        }
+        .audio-trigger:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(124, 58, 237, 0.4); }
+
+        .drop-zone { 
+            min-height: 120px; border: 4px dashed var(--secondary); border-radius: 30px; 
+            background: var(--surface); margin: 2rem 0; padding: 25px; 
+            display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .word-pool { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; min-height: 80px; }
+        
+        .word-chip { 
+            background: var(--bg); border: 2.5px solid var(--border); padding: 16px 28px; 
+            border-radius: 18px; font-weight: 800; cursor: pointer; font-size: 1.3rem;
+            color: var(--text-main); box-shadow: var(--shadow-sm);
+        }
+        .word-chip:hover { transform: scale(1.08); border-color: var(--primary); color: var(--primary); box-shadow: var(--glow); }
+
+        /* Teacher's Note */
+        .teacher-note {
+            display: none; background: rgba(16, 185, 129, 0.1); border: 2px solid var(--accent); 
+            border-radius: 25px; padding: 2.5rem; margin-top: 3rem; text-align: left; 
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .teacher-note b { color: var(--accent); font-size: 1.4rem; display: block; margin-bottom: 15px; }
+        .teacher-note p { color: var(--text-main); font-size: 1.15rem; margin-bottom: 0; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 2.5rem; }
+        .btn-ui { padding: 22px; border-radius: 20px; border: 3px solid var(--border); font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-size: 1.1rem; }
+        .btn-ui.clear { background: var(--surface); color: var(--error); border-color: var(--error); }
+        .btn-ui.verify { background: var(--accent); color: white; border-color: var(--accent); }
+        .btn-ui:hover { transform: translateY(-5px); box-shadow: var(--shadow-sm); }
+
+        /* --- Quiz System --- */
+        .quiz-option { 
+            width: 100%; padding: 24px; margin-bottom: 18px; border: 3px solid var(--border); 
+            border-radius: 22px; background: var(--bg); color: var(--text-main); 
+            font-weight: 700; text-align: left; cursor: pointer; font-size: 1.25rem;
+        }
+        .quiz-option:hover { border-color: var(--primary); transform: translateX(12px); background: var(--primary-light); }
+        
+        .timer-track { width: 100%; height: 14px; background: var(--border); border-radius: 10px; margin-bottom: 3.5rem; overflow: hidden; }
+        #timer-fill { width: 100%; height: 100%; background: var(--accent); transition: width 1s linear; }
+
+        /* Success & Review Screen */
+        .success-frame { text-align: center; display: none; }
+        .success-img-box { 
+            width: 100%; max-width: 450px; margin: 3rem auto; border-radius: 40px; 
+            border: 6px solid var(--accent); overflow: hidden; box-shadow: var(--glow);
+        }
+        .success-img-box img { width: 100%; display: block; }
+        
+        .review-box { background: var(--surface); border: 2px solid var(--error); border-radius: 25px; padding: 2rem; margin: 2rem 0; text-align: left; display: none; }
+        .review-box h3 { color: var(--error); margin-top: 0; }
+        .review-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .review-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        /* --- WhatsApp Left --- */
+        .wa-float { 
+            position: fixed; bottom: 35px; left: 35px; background: #25d366; color: white; 
+            width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; font-size: 40px; z-index: 4000; 
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4); text-decoration: none; transition: 0.4s; 
+        }
+        .wa-float:hover { transform: scale(1.15) rotate(-15deg); }
+
+        /* --- Footer --- */
+        footer { padding: 8rem 2rem 4rem; border-top: 2px solid var(--border); margin-top: 8rem; text-align: center; background: var(--surface); }
+        .footer-logo { font-size: 2.2rem; font-weight: 800; font-family: 'Outfit'; margin-bottom: 1.5rem; }
+        .footer-logo span { color: var(--primary); }
+
+        @media (max-width: 768px) {
+            header { padding: 1rem 1.5rem; }
+            .container { padding: 2rem 1rem; }
+            .card { padding: 3rem 1.5rem; }
+            .sidebar { width: 100%; }
+            .wa-float { width: 65px; height: 65px; font-size: 32px; bottom: 25px; left: 25px; }
+            .action-grid { grid-template-columns: 1fr; }
+            .node { padding: 10px 15px; font-size: 0.95rem; }
+            .formula i { transform: rotate(90deg); margin: 10px 0; }
+            .formula { flex-direction: column; }
+        }
+    </style>
+</head>
+<body onclick="unlockAudio()">
+
+<div class="blueprint-bg"></div>
+
+<header>
+    <div class="header-brand" onclick="nav('home')">
+        <div class="logo-box">
+            <svg class="logo-svg" viewBox="0 0 100 100">
+                <path d="M30 60 C30 40 45 35 55 35 C70 35 75 50 75 65 Q75 80 55 80 Q40 80 30 60" fill="none" stroke="currentColor" stroke-width="6"/>
+                <path d="M45 35 Q50 15 55 35 Q60 15 65 35" fill="#ef4444"/>
+            </svg>
+        </div>
+        <div class="brand-text"><b>TO vs FOR Lab</b></div>
+    </div>
+    <button class="menu-trigger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+</header>
+
+<div class="sidebar" id="sidebar">
+    <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+    
+    <div class="nav-menu">
+        <button class="side-btn active" onclick="nav('home', this)"><i class="fas fa-home"></i> Mission Dashboard</button>
+        <button class="side-btn" onclick="nav('theory', this)"><i class="fas fa-book-open"></i> Grammar Theory</button>
+        <button class="side-btn" onclick="nav('practice', this)"><i class="fas fa-dumbbell"></i> Guided Workshop</button>
+        <button class="side-btn" onclick="nav('evaluation', this)"><i class="fas fa-stopwatch"></i> Final Evaluation</button>
+    </div>
+
+    <div class="theme-control">
+        <span style="font-weight: 800; font-size: 0.85rem; letter-spacing: 1px;">DARK MODE</span>
+        <label class="switch">
+            <input type="checkbox" id="themeInput" onchange="toggleTheme()">
+            <span class="slider"></span>
+        </label>
+    </div>
+</div>
+
+<div class="container">
+
+    <section id="sec-home" class="section active">
+        <div class="card">
+            <h1>The Ultimate <span class="bold-purple">Battle</span></h1>
+            <p>Bienvenido. Uno de los errores más comunes al aprender inglés es confundir cuándo usar <b>TO</b> y cuándo usar <b>FOR</b>. Si alguna vez has dicho <span class="lang-en">"I bought a gift to my mom"</span>, este laboratorio es exactamente lo que necesitas.</p>
+            
+            <div class="explainer-box">
+                <p><b>¿Cuál es el problema real?</b> En español, solemos usar "para" o "a" de manera intercambiable, pero en inglés, la estructura depende de una lógica espacial: debes analizar si la acción es una <b>Transferencia Física (TO)</b> o un <b>Beneficio / Favor (FOR)</b>.</p>
+            </div>
+
+            <p>En este módulo Platinum, desglosaremos la arquitectura de los <b>Objetos Directos e Indirectos</b> para que tu cerebro asimile la lógica detrás de cada preposición, eliminando la necesidad de memorizar largas listas.</p>
+
+            <button class="btn-ui verify" style="width: 100%; margin-top: 3rem; padding: 25px; font-size: 1.2rem;" onclick="nav('theory')">Enter Grammar Theory <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+        </div>
+    </section>
+
+    <section id="sec-theory" class="section">
+        <div class="card">
+            <h1>Grammar <span class="bold-blue">Theory</span></h1>
+            <p>Para dominar este tema, primero debemos entender la diferencia entre "la cosa" y "la persona" dentro de la oración.</p>
+            
+            <h2>Direct vs Indirect Objects</h2>
+            <p>El <b>Direct Object (DO)</b> es la <i>cosa</i> que se mueve o se hace. El <b>Indirect Object (IO)</b> es la <i>persona</i> que lo recibe o se beneficia.</p>
+            
+            
+
+            <div class="logic-panel">
+                <div class="formula">
+                    <div class="node">Subject</div> <i class="fas fa-arrow-right"></i> 
+                    <div class="node">Verb</div> <i class="fas fa-arrow-right"></i> 
+                    <div class="node">Direct Object (Thing)</div> <i class="fas fa-arrow-right"></i> 
+                    <div class="node to">TO / FOR</div> <i class="fas fa-arrow-right"></i> 
+                    <div class="node person">Indirect Object (Person)</div>
+                </div>
+            </div>
+
+            <h2>Rule 1: Transferencia (<span class="bold-purple">TO</span>)</h2>
+            <p>Usamos <b>TO</b> cuando hay un movimiento, dirección o transferencia (física o verbal) hacia alguien. Piensa en una flecha recta viajando del punto A al B.</p>
+            <ul style="font-size:1.25rem; line-height:2; font-weight:700; color: var(--text-muted);">
+                <li>Verbos clave: <span class="lang-en">Give, Send, Tell, Read, Write, Bring.</span></li>
+                <li>Ejemplo: <span class="lang-en">I sent the email <b>to</b> the manager.</span></li>
+            </ul>
+
+            <h2>Rule 2: Beneficio o Favor (<span class="bold-blue">FOR</span>)</h2>
+            <p>Usamos <b>FOR</b> cuando hacemos algo <i>por el bien de alguien</i>. Alguien sale beneficiado de la acción o le ahorraste el trabajo. Piensa en un regalo envuelto.</p>
+            <ul style="font-size:1.25rem; line-height:2; font-weight:700; color: var(--text-muted);">
+                <li>Verbos clave: <span class="lang-en">Buy, Make, Cook, Find, Get, Bake.</span></li>
+                <li>Ejemplo: <span class="lang-en">She baked a cake <b>for</b> her son.</span></li>
+            </ul>
+            
+            
+
+            <div class="explainer-box" style="border-left-color:var(--accent); background:rgba(16, 185, 129, 0.05);">
+                <p><b style="color:var(--accent); font-size: 1.3rem;">The Grammar Flip (El Truco Pro):</b></p>
+                <p style="margin-top: 10px;">Si inviertes el orden y colocas a la <b>Persona</b> ANTES que la <b>Cosa</b>, ¡la preposición desaparece por completo!</p>
+                <div style="margin-top:20px; font-family:'JetBrains Mono'; font-weight:700; background: var(--bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+                    1. Give the book <b>to</b> me. <br><br>
+                    2. Give <b>me</b> the book. <span style="color:var(--text-muted); font-weight: 400;">(Preposition erased)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sec-practice" class="section">
+        <div class="card">
+            <h1>Guided <span class="bold-purple">Workshop</span></h1>
+            <p>Aplica la teoría arquitectónica. Escucha la oración target y construye la estructura correcta arrastrando los bloques. <b>Si la lógica es correcta, desbloquearás las notas del profesor.</b></p>
+            
+            <div class="workshop-area">
+                <button class="audio-trigger" onclick="playCurrentPrac()">
+                    <i class="fas fa-volume-up"></i> Listen Target Phrase
+                </button>
+
+                <div class="drop-zone" id="dropPort"></div>
+                <div class="word-pool" id="wordDock"></div>
+
+                <div class="action-grid" id="actionGrid">
+                    <button class="btn-ui clear" onclick="resetWorkshop()">Clear Board</button>
+                    <button class="btn-ui verify" onclick="verifySentence()">Verify Logic</button>
+                </div>
+
+                <div class="teacher-note" id="teacherExp">
+                    <b><i class="fas fa-chalkboard-teacher"></i> Teacher's Note:</b>
+                    <p id="expText"></p>
+                    <button class="btn-ui verify" style="width: 100%; margin-top:25px;" onclick="nextPrac()">Siguiente Ejercicio <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sec-evaluation" class="section">
+        <div class="card">
+            <div id="quiz-preamble">
+                <h1>Final <span class="bold-blue">Evaluation</span></h1>
+                <p>Pon a prueba tu instinto gramatical. Tienes <b>5 minutos</b> para completar 10 escenarios.</p>
+                <div class="explainer-box" style="padding: 1.5rem; margin-top: 1rem; margin-bottom: 3rem;">
+                    <p>Necesitas un mínimo de <b>70%</b> para obtener la certificación de este laboratorio.</p>
+                </div>
+                <button class="btn-ui verify" style="width: 100%; font-size: 1.3rem; padding: 25px;" onclick="startEvaluation()">Initiate Protocol 🚀</button>
+            </div>
+
+            <div id="quiz-active" style="display:none;">
+                <div class="timer-track"><div id="timer-fill"></div></div>
+                <div id="question-box"></div>
+            </div>
+
+            <div class="success-frame" id="quiz-success">
+                <h1 id="result-heading" style="color: var(--accent);">¡MISIÓN CUMPLIDA!</h1>
+                <p id="result-sub" style="font-size:1.3rem;">Has dominado la arquitectura de los objetos. Tu fluidez acaba de subir de nivel.</p>
+                
+                <div class="success-img-box" id="success-image-container">
+                    <img src="https://drive.google.com/thumbnail?id=1LQBUcZNOdb4SPKnAe6QfU63q6ylO8sa7&sz=w800" alt="Success">
+                </div>
+                
+                <p id="final-result-text" style="font-size: 3rem; font-weight: 800; color: var(--primary); margin: 2rem 0;"></p>
+                
+                <div class="review-box" id="reviewBox">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Review Errors:</h3>
+                    <div id="reviewContent"></div>
+                </div>
+
+                <button class="btn-ui verify" style="width: 100%; margin-top: 2rem;" onclick="location.reload()">Return to Command Center</button>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="footer-logo">RATORS<span>CLUB</span></div>
+    <p style="font-weight: 800; color: var(--text-main); font-size: 1.2rem;">Teacher Netza Varo | Elite English Coaching</p>
+    <div style="margin-top: 4rem; opacity: 0.4; font-size: 0.8rem; font-weight: 800; letter-spacing: 3px;">
+        PLATINUM EDITION 2026 | GNU GPL v3.0 | BY RATORS TEAM
+    </div>
+</footer>
+
+<a href="https://wa.me/523231116425" class="wa-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+    /* ========================================
+       ENGINE: RATORS MASTERY LOGIC v12
+       ======================================== */
+    
+    // --- Audio System ---
+    let audioUnlocked = false;
+    function unlockAudio() { if(!audioUnlocked) { window.speechSynthesis.speak(new SpeechSynthesisUtterance("")); audioUnlocked = true; } }
+    function speakText(txt) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(txt);
+        msg.lang = 'en-US'; msg.rate = 0.85;
+        window.speechSynthesis.speak(msg);
+    }
+
+    // --- Navigation & Theme System ---
+    function toggleSidebar() { 
+        document.getElementById('sidebar').classList.toggle('active'); 
+    }
+    
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('rators-theme', isDark ? 'dark' : 'light');
+    }
+
+    function nav(id, btn) {
+        // Hide all sections, show target
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById('sec-' + id).classList.add('active');
+        
+        // Update sidebar active states
+        document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        
+        // Close sidebar if mobile
+        if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+        
+        window.scrollTo(0,0);
+        if(id === 'practice') initWorkshop();
+    }
+
+    // --- Guided Workshop Logic ---
+    const workshopData = [
+        {
+            full: "I bought a gift for my mother", 
+            words: ["I", "bought", "a gift", "for", "my mother"],
+            exp: "Usamos <b>FOR</b> porque el verbo 'Buy' (comprar) es una acción de beneficio. El regalo es un favor o detalle pensado <i>por el bien</i> de ella."
+        },
+        {
+            full: "Please send this report to the boss", 
+            words: ["Please", "send", "this report", "to", "the boss"],
+            exp: "Usamos <b>TO</b> porque el verbo 'Send' (enviar) marca una transferencia directa. El reporte viaja físicamente (o digitalmente) del punto A al punto B."
+        },
+        {
+            full: "She made a sandwich for you", 
+            words: ["She", "made", "a sandwich", "for", "you"],
+            exp: "Usamos <b>FOR</b> porque 'Make' (hacer/preparar) implica que alguien invirtió esfuerzo para beneficiar a otra persona (te ahorró el trabajo de cocinar)."
+        },
+        {
+            full: "He read the story to the children",
+            words: ["He", "read", "the story", "to", "the children"],
+            exp: "Usamos <b>TO</b> porque 'Read' (leer) implica que las palabras y la información se están transfiriendo verbalmente hacia los oyentes."
+        },
+        {
+            full: "They found a new apartment for us",
+            words: ["They", "found", "a new apartment", "for", "us"],
+            exp: "Usamos <b>FOR</b> porque 'Find' (encontrar) es un servicio. Ellos hicieron el esfuerzo de buscar para beneficiarnos a nosotros."
+        }
+    ];
+    let curPracIdx = 0;
+
+    function initWorkshop() {
+        document.getElementById('teacherExp').style.display = 'none';
+        document.getElementById('actionGrid').style.display = 'grid';
+        
+        const data = workshopData[curPracIdx];
+        const dock = document.getElementById('wordDock');
+        const port = document.getElementById('dropPort');
+        dock.innerHTML = ''; port.innerHTML = '';
+        port.style.borderColor = 'var(--secondary)';
+
+        // Create draggable chips
+        [...data.words].sort(() => Math.random() - 0.5).forEach(word => {
+            const chip = document.createElement('div');
+            chip.className = 'word-chip';
+            chip.innerText = word;
+            chip.onclick = () => { 
+                port.appendChild(chip); 
+                speakText(word); 
+            };
+            dock.appendChild(chip);
+        });
+    }
+
+    function playCurrentPrac() { speakText(workshopData[curPracIdx].full); }
+    function resetWorkshop() { initWorkshop(); }
+
+    function verifySentence() {
+        const result = Array.from(document.getElementById('dropPort').children).map(c => c.innerText).join(' ');
+        const dropZone = document.getElementById('dropPort');
+
+        if(result === workshopData[curPracIdx].full) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            document.getElementById('actionGrid').style.display = 'none'; 
+            dropZone.style.borderColor = 'var(--accent)';
+            
+            // Show Explanation
+            const expBox = document.getElementById('teacherExp');
+            document.getElementById('expText').innerHTML = workshopData[curPracIdx].exp;
+            expBox.style.display = 'block';
+            speakText("Correct logic. Read the teacher's note.");
+            
+        } else {
+            dropZone.style.borderColor = 'var(--error)';
+            speakText("Incorrect structure. Try again.");
+            setTimeout(() => dropZone.style.borderColor = 'var(--secondary)', 1200);
+        }
+    }
+
+    function nextPrac() {
+        curPracIdx = (curPracIdx + 1) % workshopData.length;
+        initWorkshop();
+    }
+
+    // --- Final Evaluation Logic with Review System ---
+    const quizItems = [
+        { q: "I sent the documents ____ the accountant.", a: "to", o: ["to", "for"] },
+        { q: "Could you get some coffee ____ me?", a: "for", o: ["to", "for"] },
+        { q: "She cooked an amazing dinner ____ her family.", a: "for", o: ["to", "for"] },
+        { q: "Can you pass the salt ____ him?", a: "to", o: ["to", "for"] },
+        { q: "I am looking ____ my keys. Have you seen them?", a: "for", o: ["to", "for"] },
+        { q: "Give the presentation ____ the clients.", a: "to", o: ["to", "for"] },
+        { q: "He built a treehouse ____ his kids.", a: "for", o: ["to", "for"] },
+        { q: "Read the instructions ____ the team.", a: "to", o: ["to", "for"] },
+        { q: "I bought these tickets ____ us.", a: "for", o: ["to", "for"] },
+        { q: "They offered a job ____ me.", a: "to", o: ["to", "for"] }
+    ];
+
+    let quizIdx = 0;
+    let quizScore = 0;
+    let quizClock;
+    let mistakesArray = [];
+
+    function startEvaluation() {
+        document.getElementById('quiz-preamble').style.display = 'none';
+        document.getElementById('quiz-active').style.display = 'block';
+        mistakesArray = [];
+        quizScore = 0;
+        quizIdx = 0;
+        
+        let timeLeft = 300; // 5 minutes
+        quizClock = setInterval(() => {
+            timeLeft -= 0.2;
+            document.getElementById('timer-fill').style.width = (timeLeft / 300) * 100 + '%';
+            if(timeLeft <= 0) finishEvaluation();
+        }, 200);
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if(quizIdx >= quizItems.length) return finishEvaluation();
+        
+        const data = quizItems[quizIdx];
+        const box = document.getElementById('question-box');
+        box.innerHTML = `<h3 style="font-size: 1.8rem; margin-bottom: 2.5rem;">${quizIdx + 1}. ${data.q}</h3>`;
+        
+        data.o.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-option';
+            btn.innerText = opt;
+            btn.onclick = () => {
+                if(opt === data.a) {
+                    quizScore++;
+                } else {
+                    // Record mistake
+                    mistakesArray.push({
+                        question: data.q.replace('____', `<b>${data.a}</b>`),
+                        userAnswer: opt
+                    });
+                }
+                quizIdx++;
+                showQuestion();
+            };
+            box.appendChild(btn);
+        });
+    }
+
+    function finishEvaluation() {
+        clearInterval(quizClock);
+        document.getElementById('quiz-active').style.display = 'none';
+        document.getElementById('quiz-success').style.display = 'block';
+        
+        const resultText = document.getElementById('final-result-text');
+        const heading = document.getElementById('result-heading');
+        const sub = document.getElementById('result-sub');
+        const imgBox = document.getElementById('success-image-container');
+        
+        resultText.innerText = `${quizScore} / 10`;
+        
+        if(quizScore >= 7) {
+            confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
+            heading.innerText = "¡MISIÓN CUMPLIDA!";
+            heading.style.color = "var(--accent)";
+            sub.innerText = "Has dominado la arquitectura de los objetos. Tu fluidez acaba de subir de nivel.";
+            imgBox.style.display = "block";
+        } else {
+            heading.innerText = "CERTIFICACIÓN FALLIDA";
+            heading.style.color = "var(--error)";
+            sub.innerText = "Necesitas repasar la teoría de Transferencia y Beneficio.";
+            imgBox.style.display = "none";
+            resultText.style.color = "var(--error)";
+        }
+
+        // Render Review Errors if any
+        const reviewBox = document.getElementById('reviewBox');
+        const reviewContent = document.getElementById('reviewContent');
+        if (mistakesArray.length > 0) {
+            reviewBox.style.display = 'block';
+            let html = '';
+            mistakesArray.forEach((err, i) => {
+                html += `<div class="review-item">
+                            <p style="margin:0; font-size:1.1rem; color:var(--text-main);"><b>${i+1}.</b> ${err.question}</p>
+                            <p style="margin:5px 0 0; color:var(--text-muted); font-size:0.95rem;">You selected: <span style="color:var(--error); text-decoration:line-through;">${err.userAnswer}</span></p>
+                         </div>`;
+            });
+            reviewContent.innerHTML = html;
+        } else {
+            reviewBox.style.display = 'none';
+        }
+    }
+
+    // --- Init ---
+    window.onload = () => {
+        const pref = localStorage.getItem('rators-theme');
+        if(pref === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeInput').checked = true;
+        }
+    };
+</script>
+
+</body>
+</html>
